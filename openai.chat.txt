@@ -1,0 +1,30 @@
+Creates a completion for the chat message
+POST
+https://flow.ciandt.com/ai-orchestration-api/v1/openai/chat/completions
+Creates a completion for the chat message
+
+Request
+Header Parameters
+FlowTenant
+string
+required
+The tenant to use for this request.
+
+FlowAgent
+string
+required
+FlowChannel
+string
+The channel to use for this request.
+
+FlowOperationId
+string
+The operation id to use for this request.
+
+FlowAgentSecret
+string
+The marketplace solution identifier.
+
+application/json
+Bodyrequired
+Reference for the api: docs

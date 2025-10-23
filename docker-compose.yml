@@ -1,0 +1,61 @@
+version: "3.11"
+
+services:
+  backend:
+    build: ./backend
+    environment:
+      - APP_NAME=Flow RAG Chatbot
+      - ENVIRONMENT=development
+      - API_PREFIX=/api
+      - FLOW_BASE_URL=${FLOW_BASE_URL}
+      - FLOW_AGENT=${FLOW_AGENT}
+      - FLOW_TENANT=${FLOW_TENANT}
+      - FLOW_AGENT_SECRET=${FLOW_AGENT_SECRET}
+      - FLOW_CHANNEL=${FLOW_CHANNEL}
+      - VECTOR_STORE_PATH=/data/vector_store
+      - DOCUMENTS_PATH=/data/documents
+      - REDIS_URL=redis://redis:6379/0
+      - TASK_QUEUE_NAME=flow_tasks
+    volumes:
+      - ./data:/data
+      - ./.env:/app/.env:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+  worker:
+    build: ./backend
+    command: python -m app.worker.main
+    environment:
+      - FLOW_BASE_URL=${FLOW_BASE_URL}
+      - FLOW_AGENT=${FLOW_AGENT}
+      - FLOW_TENANT=${FLOW_TENANT}
+      - FLOW_AGENT_SECRET=${FLOW_AGENT_SECRET}
+      - FLOW_CHANNEL=${FLOW_CHANNEL}
+      - VECTOR_STORE_PATH=/data/vector_store
+      - DOCUMENTS_PATH=/data/documents
+      - REDIS_URL=redis://redis:6379/0
+      - TASK_QUEUE_NAME=flow_tasks
+    volumes:
+      - ./data:/data
+      - ./.env:/app/.env:ro
+    depends_on:
+      - backend
+      - redis
+  frontend:
+    build: ./frontend
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    ports:
+      - "5173:4173"
+    depends_on:
+      - backend
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
