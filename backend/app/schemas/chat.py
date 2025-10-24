@@ -3,11 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-
-class ChatMessage(BaseModel):
-    role: str = Field(..., regex=r"^(user|assistant|system)$")
-    content: str = Field(..., min_length=1)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+from app.schemas.conversation import MessageResponse
 
 
 class ChatRequest(BaseModel):
@@ -27,4 +23,4 @@ class ChatResponse(BaseModel):
     response: str
     context: List[DocumentContext] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    messages: List[ChatMessage] = Field(default_factory=list)
+    messages: List[MessageResponse] = Field(default_factory=list)

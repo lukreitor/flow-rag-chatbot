@@ -44,6 +44,14 @@ class ConversationService:
         )
         return list(self._session.exec(statement))
 
+    def get_last_message(self, conversation_id: UUID) -> Optional[Message]:
+        statement = (
+            select(Message)
+            .where(Message.conversation_id == conversation_id)
+            .order_by(Message.created_at.desc())
+        )
+        return self._session.exec(statement).first()
+
     def add_message(self, conversation_id: UUID, role: str, content: str) -> Message:
         message = Message(conversation_id=conversation_id, role=role, content=content)
         self._session.add(message)

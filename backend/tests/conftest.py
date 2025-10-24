@@ -15,6 +15,10 @@ def pytest_configure(config: pytest.Config) -> None:  # noqa: ARG001
     os.environ.setdefault("FLOW_AGENT", "test-agent")
     os.environ.setdefault("FLOW_TENANT", "test-tenant")
     os.environ.setdefault("FLOW_AGENT_SECRET", "secret")
+    test_db = Path("tests/test.db")
+    if test_db.exists():
+        test_db.unlink()
+    os.environ.setdefault("DATABASE_URL", f"sqlite:///{test_db.as_posix()}")
 
 
 @pytest.fixture()

@@ -5,7 +5,8 @@ from typing import Any, Dict
 
 from sqlmodel import Session
 
-from app.schemas.chat import ChatMessage, ChatRequest, ChatResponse
+from app.schemas.chat import ChatRequest, ChatResponse
+from app.schemas.conversation import MessageResponse
 from app.services.conversation_service import ConversationService
 from app.services.task_queue import TaskQueue
 from app.worker.tasks import process_chat
@@ -39,6 +40,7 @@ class ChatService:
         payload: Dict[str, Any] = result.payload or {}
         flow_response = payload.get("response", {})
         assistant_output = self._extract_text(flow_response)
+        context = payload.get("context") or []
 
         assistant_message = self._conversations.add_message(
             uuid.UUID(conversation_id),
@@ -47,15 +49,14 @@ class ChatService:
         )
         self._session.commit()
 
-        messages = [
-            ChatMessage(role="user", content=user_message.content, timestamp=user_message.created_at),
-            ChatMessage(role="assistant", content=assistant_message.content, timestamp=assistant_message.created_at),
-        ]
+        full_history = self._conversations.list_messages(uuid.UUID(conversation_id))
+        messages = [MessageResponse.model_validate(message) for message in full_history]
 
         return ChatResponse(
             conversation_id=conversation_id,
             response=assistant_output,
-            context=payload.get("context", []),
+            context=context,
+            created_at=assistant_message.created_at,
             messages=messages,
         )
 

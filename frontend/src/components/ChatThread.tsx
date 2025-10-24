@@ -9,9 +9,9 @@ import {
   Stack,
   Tag,
   Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import type { ChatMessage } from "../types";
+import type { ChatMessage } from '../types';
 
 interface ChatThreadProps {
   messages: ChatMessage[];
@@ -19,7 +19,7 @@ interface ChatThreadProps {
   error?: string;
 }
 
-const renderSources = (sources: ChatMessage["sources"]) => {
+const renderSources = (sources: ChatMessage['sources']) => {
   if (!sources || sources.length === 0) {
     return null;
   }
@@ -37,7 +37,7 @@ const renderSources = (sources: ChatMessage["sources"]) => {
 
 export const ChatThread = ({ messages, isLoading, error }: ChatThreadProps) => {
   return (
-    <Stack spacing={4} maxH="60vh" overflowY="auto" pr={4}>
+    <Stack spacing={4} flex="1" overflowY="auto" pr={4}>
       {error ? (
         <Alert status="error" borderRadius="md">
           <AlertIcon />
@@ -49,9 +49,9 @@ export const ChatThread = ({ messages, isLoading, error }: ChatThreadProps) => {
       {messages.map((message) => (
         <Box
           key={message.id}
-          alignSelf={message.role === "user" ? "flex-end" : "flex-start"}
-          bg={message.role === "user" ? "blue.500" : "gray.100"}
-          color={message.role === "user" ? "white" : "gray.800"}
+          alignSelf={message.role === 'user' ? 'flex-end' : 'flex-start'}
+          bg={message.role === 'user' ? 'blue.500' : 'gray.100'}
+          color={message.role === 'user' ? 'white' : 'gray.800'}
           px={4}
           py={3}
           borderRadius="xl"

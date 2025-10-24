@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 
-from app.api.routes import chat, documents, health
+from app.api.routes import chat, conversations, documents, health
 from app.core.config import Settings, get_settings
 from app.core.database import get_engine
 
@@ -38,6 +38,7 @@ def create_application() -> FastAPI:
 
     app.include_router(health.router, prefix=settings.api_prefix)
     app.include_router(chat.router, prefix=settings.api_prefix)
+    app.include_router(conversations.router, prefix=settings.api_prefix)
     app.include_router(documents.router, prefix=settings.api_prefix)
 
     return app

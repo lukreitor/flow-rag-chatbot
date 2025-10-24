@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -35,3 +35,7 @@ class MessageResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ConversationWithMessages(ConversationResponse):
+    messages: List[MessageResponse] = Field(default_factory=list)
